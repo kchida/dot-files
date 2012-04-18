@@ -1,0 +1,12 @@
+[ui]
+# editor used to enter commit logs, etc.  Most text editors will work.
+editor = vim
+username = Ken Chida <kenchida2@gmail.com>
+# Per-user, global .hgignore that overrides per-system and per-repo ignore options.
+ignore = ~/dot-files/.hgignore 
+
+# Specify merge tools to associate with particular file patterns. Overrides default
+# merge tool.
+#[merge-patterns]
+#**.c = kdiff3
+#**.jpg = myimgmerge

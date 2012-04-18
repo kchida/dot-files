@@ -1,0 +1,7 @@
+# Inputrc is for commandline or readline
+
+
+
+# This will enable all applications that use readline to operate in vi mode.
+set editing-mode vi
+set keymap vi
