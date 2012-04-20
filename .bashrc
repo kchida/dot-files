@@ -103,6 +103,9 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 ######## My Changes Start Here #################
+# Unmap Ctrl-s for vim-ipython plugin; see the docs for more info.
+stty stop undef
+
 # My Aliases
 alias lkj="cd ~/ProgrammingStuff/my_notes/"
 alias oiu="cd ~/workspace/kchida_aws/"
