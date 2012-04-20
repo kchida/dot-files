@@ -1,8 +1,11 @@
 " nocompatible needs to stay relatively close to beginning.
 set nocompatible
-filetype off              " Advised that pathogen won't work with filetype on at first.
-call pathogen#infect()    " Load all plugins in ~/.vim/bundle
-syntax on                 " syntax highlighting
+" TODO: Verify: pathogen won't initialize correctly with 'filetype on'. 
+filetype off
+" Load all plugins in ~/.vim/bundle
+call pathogen#infect() 
+" syntax highlighting
+syntax on      
 "call pathogen#runtime_append_all_bundles()
 filetype plugin indent on
 
@@ -11,18 +14,17 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+"set ofu=syntaxcomplete#Complete  " This line may be obsolete
 
 " Allow tab completion to suggest based on context.
 let g:SuperTabDefaultCompletionType = "context"
+
 " Enable completion menu and pydoc preview
 set completeopt=menuone,longest,preview
-
-"set ofu=syntaxcomplete#Complete  " This line may be obsolete
 
 runtime macros/matchit.vim
 
 set modelines=0
-
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -49,8 +51,10 @@ set laststatus=2
 set relativenumber
 set undofile
 
+" Set regex search to 'very magic' (minimizes escaping).
 nnoremap / /\v
 vnoremap / /\v
+
 set ignorecase
 set smartcase
 set gdefault
@@ -72,7 +76,6 @@ nnoremap k gk
 
 nnoremap <leader>w <C-w>v<C-w>l
 
-
 nnoremap <A-j> :m+<CR>==
 nnoremap <A-k> :m-2<CR>==
 inoremap <A-j> <Esc>:m+<CR>==gi
@@ -80,7 +83,7 @@ inoremap <A-k> <Esc>:m-2<CR>==gi
 vnoremap <A-j> :m'>+<CR>gv=gv
 vnoremap <A-k> :m-2<CR>gv=gv
 
-"folding settings
+"Folding Settings
 set foldmethod=indent   "fold based on indent
 set foldnestmax=10      "deepest fold is 10 levels
 set nofoldenable        "dont fold by default

@@ -1,7 +1,5 @@
-# Inputrc is for commandline or readline
+# This file configures command line and/or readline
 
-
-
-# This will enable all applications that use readline to operate in vi mode.
+# Enables applications that use readline to operate in vi mode (e.g., ipython)
 set editing-mode vi
 set keymap vi

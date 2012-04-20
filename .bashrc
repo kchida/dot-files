@@ -116,17 +116,11 @@ export LESS="-iR"
 # Switch readline to vi mode instead of emacs
 set -o vi
 
-#Environment setup for Django settings
-#export DJANGO_SETTINGS_MODULE="${HOME}/workspace/typing/settings.py"
-#end Django
-
 #Environment setup for AppEngine
 export PATH="/usr/local/lib/google_appengine:$PATH"
-#end AppEngine
 
 #Environment setup for Ruby
 export PATH="${HOME}/.gem/ruby/1.9.1/bin:$PATH"
-#end Ruby
 
 #Environment setup for CINT C REPL
 CINTSYSDIR=/opt/cint
@@ -136,33 +130,5 @@ MANPATH=$MANPATH:$CINTSYSDIR/doc
 LD_LIBRARY_PATH=$CINTSYSDIR/lib:$LD_LIBRARY_PATH
 export PATH CINTSYSDIR MANPATH LD_LIBRARY_PATH
 
-#Environment setup for django-mediagenerator
-#export PATH="${HOME}/workspace/freeourselves/mediagenerator:$PATH"
-#export PATH="/usr/share/yui-compressor:$PATH"
-#end django-mediagenerator
-
 #Environment setup for Python
-# PYTHONPATH gets appended to system defaults to form sys.path.  go into interactive python and try sys.path, sys.modules.
-export PATH="${PATH}:/usr/local/lib:/usr/lib"
-#export PYTHONPATH="/usr/local/lib/python2.7/dist-packages"
-# /usr/local/lib/python2.7/dist-packages/virtualenvwrapper:/usr/lib/python2.7/dist-packages"
-#end Python2.7
-
-#Environment setup for django_debug_toolbar
-#export PATH="${HOME}/eclipse/allbuttonspressed/debug_toolbar:$PATH"
-#end django_debug_toolbar
-
-#Environment setup for virtualenvwrapper
-#/usr/local/bin/python is a symlink to python2.7; that's where the site-packages for virtualenv lives.  I might want to upgrade to 2.7 when i get a chance.
-# source = run.  export = make variable available globally. ${VARIABLE_NAME} = value of VARIABLE_NAME and {} are used to separate it from adjacent characters.
-#export WORKON_HOME=$HOME/.virtualenvs   # default  
-#export PROJECT_HOME=$HOME/workspace
-#export VIRTUALENVWRAPPER_HOOK_DIR=$WORKON_HOME   # default
-#export VIRTUALENVWRAPPER_LOG_DIR=$WORKON_HOME   # default
-#override default python interpreter and specify my own
-#export VIRTUALENVWRAPPER_PYTHON="/usr/local/bin/python2.7"
-#export VIRTUALENVWRAPPER_VIRTUALENV="/usr/local/bin/virtualenv"
-# set virtualenv arg value to --no-site-packages to ensure that all new environments are isolated from the system site-packages directory.
-#export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
-#source /usr/local/bin/virtualenvwrapper.sh
-#end virtualenv
+#export PATH="${PATH}:/usr/local/lib:/usr/lib"
