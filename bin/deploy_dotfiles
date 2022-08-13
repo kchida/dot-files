@@ -8,7 +8,7 @@ pushd "$(dirname $0)/.." &> /dev/null
 ROOTDIR="$(pwd -P)"
 popd &> /dev/null
 
-DOTFILES=".bashrc .bash_profile .hosts .tmux.conf .profile .inputrc"
+DOTFILES=".bashrc .bash_profile .hosts .tmux.conf .profile .inputrc .editrc"
 DOTFILES="$DOTFILES .hgrc .gitconfig .vimrc .git-completion.bash"
 DOTFILES="$DOTFILES .vim .ipython"
 
