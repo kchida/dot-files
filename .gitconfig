@@ -1,5 +1,14 @@
-[core]
-	excludesfile = /home/kchida/dot-files/.gitignore_global
 [user]
 	name = Ken Chida
-	email = kenchida2@gmail.com
+	email = kchida@google.com
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = "/usr/bin/opendiff "
+	trustExitCode = true
+	keepBackup = false
+[push]
+	default = simple
+[core]
+	excludesfile = /Users/kenc/.gitignore_global

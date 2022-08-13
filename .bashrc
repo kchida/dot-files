@@ -7,14 +7,17 @@
 
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
+export HISTCONTROL=ignoredups:erasedups:ignorespace
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+export HISTSIZE=100000
+export HISTFILESIZE=100000
+
+# After each command, append to the history file and reread it
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -36,7 +39,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -50,9 +53,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]'
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w'
 fi
 unset color_prompt force_color_prompt
 
@@ -102,19 +105,38 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-######## My Changes Start Here #################
+######################### 
+# My Changes Start Here #
+######################### 
+
 # Unmap Ctrl-s for vim-ipython plugin; see the docs for more info.
 stty stop undef
 
 # My Aliases
-alias lkj="cd ~/ProgrammingStuff/my_notes/"
-alias oiu="cd ~/workspace/kchida_aws/"
+alias lkj="cd ~/repos/git"
+
+# Opens multiple files in tabs
+alias vim="vim -p"
+#Moving around made easy
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
 
 # Following line enables text color when text is piped to 'less'.
 # Specify flags to be used with less. -i makes searches case-insensitive when search
 # term is all lowercase; otherwise, if there are any cap chars, it will be case-sensitive.
 # -R makes less honor raw control chars only for color metadata (i.e. ESC).
 export LESS="-iR"
+
+# Color for manpages in less:
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
 
 # Switch readline to vi mode instead of emacs
 set -o vi
@@ -125,13 +147,61 @@ export PATH="/usr/local/lib/google_appengine:$PATH"
 #Environment setup for Ruby
 export PATH="${HOME}/.gem/ruby/1.9.1/bin:$PATH"
 
-#Environment setup for CINT C REPL
-CINTSYSDIR=/opt/cint
-PATH=$PATH:$CINTSYSDIR
-MANPATH=$MANPATH:$CINTSYSDIR/doc
-#LD_LIBRARY_PATH=.:$CINTSYSDIR:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$CINTSYSDIR/lib:$LD_LIBRARY_PATH
-export PATH CINTSYSDIR MANPATH LD_LIBRARY_PATH
+#Environment setup for Ruby
+export PATH="${HOME}/bin:$PATH"
 
 #Environment setup for Python
 #export PATH="${PATH}:/usr/local/lib:/usr/lib"
+
+#Enable tab completion of hostnames (useful for ssh)
+export HOSTFILE="${HOME}/.hosts"
+
+#Vim is default editor
+export EDITOR="vim"
+export VISUAL="vim"
+
+# Personal Golang stuff
+if [ ! -f /usr/lib/google-golang/bin/go ]; then
+    export GOPATH="${HOME}/gohome"
+    export PATH="${PATH}:${GOPATH}/bin"
+fi
+
+#Allow golang vim plugin discovery
+if [ -f /usr/lib/google-golang/bin/go ]; then
+    export GOROOT4VIM="$(/usr/lib/google-golang/bin/go env GOROOT)"
+elif [ -f /opt/local/bin/go ]; then
+    export GOROOT4VIM="$(/opt/local/bin/go env GOROOT)"
+elif [ -f /usr/local/go/bin/go ]; then
+    export GOROOT4VIM="$(/usr/local/go/bin/go env GOROOT)"
+else
+    export GOROOT4VIM="$(/usr/local/bin/go env GOROOT)"
+fi
+
+#Show git branch
+source "${HOME}/.git-completion.bash"
+PS1=$PS1'$(__git_ps1)\$ '
+
+# Append work-specific things here
+source ${HOME}/.bashrc_google
+
+### Functions ###
+function set_union () {
+    if [[ ! -f "$1" ]] || [[ ! -f "$2" ]]; then
+        echo "ERROR: files do not exist" && return 1
+    fi
+    echo $(cat "$1" "$2" |sort |uniq)
+}
+function set_intersect () {
+    if [[ ! -f "$1" ]] || [[ ! -f "$2" ]]; then
+        echo "ERROR: files do not exist" && return 1
+    fi
+    echo $(cat "$1" "$2" |sort |uniq -d)
+}
+function set_diff () {
+    if [[ ! -f "$1" ]] || [[ ! -f "$2" ]]; then
+        echo "ERROR: files do not exist" && return 1
+    fi
+    echo $(cat "$1" "$2" |sort |uniq -u)
+}
+#End sentinel
+

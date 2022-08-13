@@ -1,0 +1,16 @@
+*.pyc
+*.un~
+*.swp
+.hg/
+.git/
+.vim/.netrwhist
+
+.ipython/*
+!.ipython/profile_default
+.ipython/profile_default/*
+!.ipython/profile_default/ipython_config.py
+!.ipython/profile_default/poo
+!.ipython/profile_default/startup
+!.ipython/profile_default/startup/*
+.ipython/profile_default/startup/README
+

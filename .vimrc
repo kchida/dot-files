@@ -1,45 +1,57 @@
-set nocompatible                " nocompatible needs to stay relatively close to beginning.
-filetype off                    " TODO: pathogen won't initialize correctly with this on?
-call pathogen#infect()          " Load all plugins in ~/.vim/bundle
-syntax on                       " syntax highlighting
+set nocompatible                       " nocompatible needs to stay relatively close to beginning.
+filetype off                           " TODO: pathogen won't initialize correctly with this on?
+filetype plugin indent off             " Will this break pathogen? golang highlighter needs it
+set runtimepath+=$GOROOT4VIM/misc/vim  " Golang highlighting
+call pathogen#infect()                 " Load all plugins in ~/.vim/bundle
+syntax on                              " syntax highlighting
 " call pathogen#runtime_append_all_bundles()
 filetype plugin indent on
 
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType go setlocal noexpandtab listchars=tab:\ \ ,nbsp:¬,trail:·  " allow tabs and don't show them
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 "set ofu=syntaxcomplete#Complete   " This line may be obsolete
 let g:SuperTabDefaultCompletionType = "context"   " Allow tab completion to suggest
                                                   "   based on context.
 set completeopt=menuone,longest,preview   " Enable completion menu and pydoc preview
 runtime macros/matchit.vim
+
+
+" Colors              """""""""""""""""""""""""""""""""""""""""""""""""""
 " Solarized color scheme
 " set background=dark
 " colorscheme solarized
+if &diff
+    colorscheme desert
+endif
 
 
 " Editing behaviour  """""""""""""""""""""""""""""""""""""""""""""""""""
 set encoding=utf-8
 set ruler
 set laststatus=2
-set textwidth=79
-set colorcolumn=85
+set textwidth=90
+set colorcolumn=80
 set formatoptions=qrn1
 set showmode                    " always show what mode we're currently editing in
 set wrap                        " wrap lines. 'nowrap' to stop wrapping
 set tabstop=4                   " a tab is four spaces
 set softtabstop=4               " when hitting <BS>, pretend like a tab is removed, even if spaces
-set expandtab                   " expand tabs by default (overloadable per file type later)
+set expandtab                   " expand tabs to spaces by default (overloadable per file type later)
 set shiftwidth=4                " number of spaces to use for autoindenting
 set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
 set autoindent                  " always set autoindenting on
-set copyindent                  " copy the previous indentation on autoindenting
+"set copyindent                  " copy the previous indentation on autoindenting (NOTE: I get annoying ^I char)
 set number                      " always show line numbers
 " set relativenumber
 set showmatch                   " set show matching parenthesis
+set matchtime=2                 " show matching bracket for 0.2 seconds
+set matchpairs+=<:>             " specially for html
+
 set ignorecase                  " ignore case when searching
 set smartcase                   " ignore case if search pattern is all lowercase,
                                 "   case-sensitive otherwise
@@ -50,8 +62,11 @@ set virtualedit=all             " allow the cursor to go in to "invalid" places
 set hlsearch                    " highlight search terms
 set incsearch                   " show search matches as you type
 set gdefault                    " search/replace "globally" (on a line) by default
-set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
-set nolist                      " don't show invisible characters by default,
+set listchars=tab:▸·,nbsp:¬,trail:·,precedes:<,extends:>    " show non-breakable space, trailing whitespace
+set list                        " show invisible characters
+" set listchars=tab:>·,trail:·    " but only show tabs and trailing whitespace
+" set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+" set nolist                      " don't show invisible characters by default,
                                 " but it is enabled for some file types (see later)
 " set pastetoggle=<F2>          " when in insert mode, press <F2> to go to
                                 "   paste mode, where you can paste mass data
@@ -154,3 +169,28 @@ cmap w!! w !sudo tee % >/dev/null
 " followed by j. In earlier terminal use, typing Escj was another way to send a Meta
 " on a keyboard without a Meta key, but this doesn't fit well with vi's use of Esc to
 " leave insert mode.
+"
+"======= Plugin Settings =========
+"Flake8 (To run linter, press F7)                " Syntastic does much of this.
+let g:flake8_ignore="E226,E401,E501,W293"        " E128,,E261,E201,E202,E501,E226
+let g:flake8_max_line_length=99
+
+"Syntastic (To run linter, press F8)
+"Add checker (look in bundles dir for available): syntastic_[filetype]_checkers
+"Add args to checker: syntastic_[filetype]_[subchecker]_args
+"Turn off auto check as it is annoying. passive == no auto check
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [], 'passive_filetypes': [] }
+nnoremap <F8> :SyntasticCheck<CR> :SyntasticToggleMode<CR>
+
+let g:syntastic_go_checkers=['go', 'golint', 'gofmt']  " go gofmt golint gotype govet
+let g:syntastic_json_checkers=['jsonlint']
+let g:syntastic_puppet_checkers=['puppet', 'puppetlint']
+
+let g:syntastic_python_checkers=['flake8', 'python']
+let g:syntastic_python_flake8_post_args='--ignore=E226,E401,E501,W293 --max-line-length=99 --hang-closing'
+
+let g:syntastic_rst_checkers=['rstcheck']
+let g:syntastic_ruby_checkers=['mri', 'rubylint']
+let g:syntastic_ruby_exec = 'ruby1.9.1'
+let g:syntastic_sh_checkers=['checkbashisms', 'sh', 'shellcheck']
+

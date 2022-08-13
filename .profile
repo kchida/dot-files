@@ -31,7 +31,22 @@ fi
 #complete -o default -F _pip_completion pip
 # pip bash completion end
 
+#########################
+# My Changes Start Here #
+#########################
 export LANGUAGE="en_US:en"
 export LC_MESSAGES="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
 export LC_COLLATE="en_US.UTF-8"
+
+#function backup () { 
+#    newname=$1.`date +%Y%m%d.%H%M.bak`; 
+#    mv $1 $newname; 
+#    echo "Backed up $1 to $newname."; 
+#    cp -p $newname $1;
+#}
+
+#Nice to run selected lines through python in EX mode.
+#alias py=/usr/bin/python
+#export PATH=$PATH:/tmp/mock_etcd/etcd/bin
+#export PATH=$PATH:/tmp/mock_etcd/etcdctl/bin

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+# Vars
+pushd "$(dirname $0)/.." &> /dev/null
+ROOTDIR="$(pwd -P)"
+popd &> /dev/null
+
+DOTFILES=".bashrc .bash_profile .hosts .tmux.conf .profile .inputrc"
+DOTFILES="$DOTFILES .hgrc .gitconfig .vimrc .git-completion.bash"
+DOTFILES="$DOTFILES .vim .ipython"
+
+# Args/Flags
+TYPE='copy'
+FORCE=0
+BACKUP=0
+
+# Usage
+show_help () {
+    echo "Usage: deploy -t [copy|symlink] [-f] [-b]"
+    echo
+    echo "Flags:"
+    echo "    -t default action is to copy files."
+    echo "    -f Force copy/symlink even if file exists."
+    echo "    -b Back up old file if it already exists."
+}
+
+# Parse args
+while getopts "h?t:fb" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 0
+        ;;
+    t)  if [ -n "$OPTARG" ] || [ "$OPTARG" = 'copy' ]; then
+            TYPE='copy'
+        else
+            TYPE='symlink'
+        fi
+        ;;
+    f)  FORCE=1
+        ;;
+    b)  BACKUP=1
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+if [ -d "$HOME" ]; then
+    echo "INFO: Using HOME directory: $HOME"
+else
+    echo "ERROR: HOME is not set or it is invalid: $HOME"
+fi
+
+echo "INFO: Action type '$TYPE' selected."
+echo "INFO: Force flag is '$FORCE'"
+
+# Trusting that I won't use spaces in dotfile names! Pet peave.
+backupdir="${HOME}/dotfiles_bak_$(date +%s)"
+for dfile in $DOTFILES; do
+
+    echo
+
+    # Backup the file
+    if [ -f "${HOME}/$dfile" ] || [ -d "${HOME}/$dfile" ] || [ -L "${HOME}/$dfile" ]; then
+        if [ "$FORCE" = 0 ]; then
+            echo "WARN: Skipping $dfile as -f force flag not used and file already exists"
+            continue
+        else
+            if [ "$BACKUP" = 1 ]; then
+                echo "INFO: Backing up existing $dfile to ${HOME}/${dfile}_$(date +%s)"
+                mkdir -p "$backupdir"
+                mv "${HOME}/$dfile" "$backupdir"
+            fi
+        fi
+    fi
+
+    if [ "$TYPE" = 'copy' ]; then
+        echo "INFO: Copying $dfile to ${HOME}/$dfile"
+        cp -r "${ROOTDIR}/$dfile" "${HOME}/$dfile"
+    else
+        echo "INFO: Making symlink ${HOME}/$dfile pointing to ${ROOTDIR}/$dfile"
+        ln -sf "${ROOTDIR}/$dfile" "${HOME}/$dfile"
+    fi
+done
+
